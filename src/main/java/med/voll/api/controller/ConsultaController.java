@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import med.voll.api.application.dto.consulta.DatosCancelamientoConsulta;
 import med.voll.api.application.dto.consulta.DatosDetallesConsulta;
 import med.voll.api.application.dto.consulta.DatosReservaConsulta;
-import med.voll.api.application.dto.medico.DatosMedicoDTO;
 import med.voll.api.domain.repository.ConsultaRepository;
 import med.voll.api.service.consulta.ConsultaReservaService;
 import org.springframework.beans.factory.annotation.Autowired;

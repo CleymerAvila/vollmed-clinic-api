@@ -7,8 +7,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import med.voll.api.domain.model.Usuario;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -55,7 +53,7 @@ public class TokenService {
         }
 
         if (verifier.getSubject() == null) {
-            throw new RuntimeException("Verifier subject Invalido");
+            throw new RuntimeException("Verifier subject Invalido!!");
         }
         return verifier.getSubject();
     }
