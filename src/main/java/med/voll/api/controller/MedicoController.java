@@ -5,7 +5,6 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import med.voll.api.application.dto.*;
 import med.voll.api.application.dto.medico.ActualizarMedicoDTO;
-import med.voll.api.application.dto.medico.DatosMedicoDTO;
 import med.voll.api.application.dto.medico.DatosMedicosRegistro;
 import med.voll.api.application.dto.medico.DatosRespuestaMedico;
 import med.voll.api.domain.model.Medico;
@@ -30,12 +29,12 @@ public class MedicoController {
 
 
     @PostMapping
-    public ResponseEntity<DatosMedicosRegistro> registrarMedico(@Valid @RequestBody DatosMedicosRegistro datosMedicosRegistro,
+    public ResponseEntity<DatosRespuestaMedico> registrarMedico(@Valid @RequestBody DatosMedicosRegistro datosMedicosRegistro,
                                                                 UriComponentsBuilder uriComponentsBuilder){
         Medico medico = repository.save(new Medico(datosMedicosRegistro));
 
-        DatosMedicosRegistro datos = new DatosMedicosRegistro(medico.getNombre(),
-                medico.getEmail(), medico.getTelefono(),medico.getDocumento(), medico.getEspecialidad(), new DatosDireccion(medico.getDireccion().getCalle(),
+        var datos = new DatosRespuestaMedico(medico.getId(), medico.getNombre(),
+                medico.getEmail(), medico.getTelefono(),medico.getDocumento(), medico.getEspecialidad().toString(), new DatosDireccion(medico.getDireccion().getCalle(),
                 medico.getDireccion().getDistrito(), medico.getDireccion().getCiudad(), medico.getDireccion().getNumero(),
                 medico.getDireccion().getComplemento()));
 
@@ -45,10 +44,10 @@ public class MedicoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DatosMedicoDTO>> listadoMedicos(@PageableDefault(size = 10) Pageable paginacion){
+    public ResponseEntity<Page<DatosRespuestaMedico>> listadoMedicos(@PageableDefault(size = 10) Pageable paginacion){
        //  return repository.findAll(paginacion).map(DatosMedicoDTO::new);
 
-        return ResponseEntity.ok(repository.findByActivoTrue(paginacion).map(DatosMedicoDTO::new));
+        return ResponseEntity.ok(repository.findByActivoTrue(paginacion).map(DatosRespuestaMedico::new));
     }
 
     @PutMapping
@@ -59,7 +58,7 @@ public class MedicoController {
         medico.actualizarDatos(datos);
 
         return ResponseEntity.ok(new DatosRespuestaMedico(medico.getId(), medico.getNombre(),
-                medico.getEmail(), medico.getTelefono(), medico.getEspecialidad().toString(),
+                medico.getEmail(), medico.getTelefono(), medico.getDocumento(), medico.getEspecialidad().toString(),
                 new DatosDireccion(medico.getDireccion().getCalle(), medico.getDireccion().getDistrito(),
                         medico.getDireccion().getCiudad(), medico.getDireccion().getNumero(), medico.getDireccion().getComplemento())));
     }
@@ -78,7 +77,7 @@ public class MedicoController {
     public ResponseEntity<DatosRespuestaMedico> retornaDatos(@PathVariable Long id){
         Medico medico = repository.getReferenceById(id);
         var datosMedico = new DatosRespuestaMedico(medico.getId(), medico.getNombre(),
-                medico.getEmail(), medico.getTelefono(), medico.getEspecialidad().toString(), new DatosDireccion(medico.getDireccion().getCalle(),
+                medico.getEmail(), medico.getTelefono(), medico.getDocumento(), medico.getEspecialidad().toString(), new DatosDireccion(medico.getDireccion().getCalle(),
                 medico.getDireccion().getDistrito(), medico.getDireccion().getCiudad(), medico.getDireccion().getNumero(),
                 medico.getDireccion().getComplemento()));
 

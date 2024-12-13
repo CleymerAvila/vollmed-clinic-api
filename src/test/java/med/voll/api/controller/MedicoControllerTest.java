@@ -1,19 +1,19 @@
 package med.voll.api.controller;
 
 import med.voll.api.application.dto.DatosDireccion;
-import med.voll.api.application.dto.medico.DatosMedicoDTO;
 import med.voll.api.application.dto.medico.DatosMedicosRegistro;
+import med.voll.api.application.dto.medico.DatosRespuestaMedico;
 import med.voll.api.domain.model.Especialidad;
 import med.voll.api.domain.model.Medico;
 import med.voll.api.domain.repository.MedicoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -36,9 +36,9 @@ class MedicoControllerTest {
     private JacksonTester<DatosMedicosRegistro> datosMedicosRegistroJson;
 
     @Autowired
-    private JacksonTester<DatosMedicoDTO> datosDetallesMedicoJson;
+    private JacksonTester<DatosRespuestaMedico> datosDetallesMedicoJson;
 
-    @Mock
+    @MockBean
     private MedicoRepository repository;
 
     @Test
@@ -58,7 +58,7 @@ class MedicoControllerTest {
 
         var datosRegistro = new DatosMedicosRegistro(
                 "Medico",
-                "medico@voll.med",
+                "new.medico@voll.med",
                 "0239034",
                 "293933",
                 Especialidad.CARDIOLOGIA,
@@ -72,7 +72,8 @@ class MedicoControllerTest {
                         .content(datosMedicosRegistroJson.write(datosRegistro).getJson()))
                 .andReturn().getResponse();
 
-        var datosDetalles = new DatosMedicoDTO(
+        var datosDetalles = new DatosRespuestaMedico(
+                null,
                 datosRegistro.nombre(),
                 datosRegistro.email(),
                 datosRegistro.telefono(),
@@ -82,7 +83,6 @@ class MedicoControllerTest {
         );
 
         var jsonEsperado = datosDetallesMedicoJson.write(datosDetalles).getJson();
-
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.getContentAsString()).isEqualTo(jsonEsperado);
