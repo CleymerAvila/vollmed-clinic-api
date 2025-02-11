@@ -3,6 +3,7 @@ package med.voll.api.controller;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import med.voll.api.application.dto.consulta.DatosCancelamientoConsulta;
 import med.voll.api.application.dto.consulta.DatosDetallesConsulta;
+import med.voll.api.application.dto.consulta.DatosRelatorioConsultaMensual;
 import med.voll.api.application.dto.consulta.DatosReservaConsulta;
 import med.voll.api.domain.repository.ConsultaRepository;
 import med.voll.api.service.consulta.ConsultaReservaService;
@@ -15,6 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.List;
 
 @RestController
 @RequestMapping("/consultas")
@@ -45,6 +50,18 @@ public class ConsultaController {
     public ResponseEntity<Void> cancelar(@RequestBody @Valid DatosCancelamientoConsulta datos){
         consultaReserva.cancelar(datos);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/relatorio-mensual/{mes}")
+    public ResponseEntity<List<DatosRelatorioConsultaMensual>> generarConsultaMensual(@PathVariable("mes") YearMonth mes){
+        int year = mes.getYear();
+        int month = mes.getMonthValue();
+
+        List<DatosRelatorioConsultaMensual> reporte = repository.findConsultasPorMes(year, month);
+
+        return ResponseEntity.ok(reporte);
+
+
     }
 
 }
